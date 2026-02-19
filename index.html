@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मंजू ट्रैवल्स - स्वर्णिम यात्रा का अनुभव</title>
+    <!-- फॉन्ट्स और आइकॉन्स -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cinzel:wght@400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* गोल्ड और सिल्वर वेरिएबल्स */
+        :root {
+            --gold: #FFD700;
+            --gold-light: #FDB931;
+            --gold-dark: #B8860B;
+            --silver: #C0C0C0;
+            --silver-light: #E8E8E8;
+            --silver-dark: #A9A9A9;
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 30, 0.8);
+        }
+
+        /* कस्टम स्क्रॉलबार */
+        ::-webkit-scrollbar {
+            width: 12px;
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            border-radius: 6px;
+        }
+
+        /* लैंग्वेज स्विचर */
+        .lang-switcher {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            padding: 10px 25px;
+            border-radius: 60px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--silver-light);
+            font-weight: 600;
+            padding: 8px 25px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lang-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .lang-btn:hover::before {
+            left: 100%;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 0 30px var(--gold);
+        }
+
+        /* लैंग्वेज डिस्प्ले */
+        .lang-en {
+            display: none !important;
+        }
+
+        body.hindi .lang-hi {
+            display: block !important;
+        }
+
+        body.hindi .lang-en {
+            display: none !important;
+        }
+
+        body.english .lang-en {
+            display: block !important;
+        }
+
+        body.english .lang-hi {
+            display: none !important;
+        }
+
+        body.hindi .lang-hi-inline {
+            display: inline !important;
+        }
+
+        body.hindi .lang-en-inline {
+            display: none !important;
+        }
+
+        body.english .lang-en-inline {
+            display: inline !important;
+        }
+
+        body.english .lang-hi-inline {
+            display: none !important;
+        }
+
+        /* वीडियो बैकग्राउंड */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .gold-text {
+            font-size: 5rem;
+            background: linear-gradient(45deg, var(--gold), var(--silver), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            margin-bottom: 20px;
+            animation: titleGlow 3s infinite;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: drop-shadow(0 0 20px var(--gold)); }
+            50% { filter: drop-shadow(0 0 40px var(--silver)); }
+            100% { filter: drop-shadow(0 0 20px var(--gold)); }
+        }
+
+        .silver-text {
+            font-size: 2rem;
+            color: var(--silver-light);
+            letter-spacing: 8px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        /* फैमिली इमेज सेक्शन */
+        .family-section {
+            position: relative;
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.pexels.com/photos/5371582/pexels-photo-5371582.jpeg') center/cover fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-top: 3px solid var(--gold);
+            border-bottom: 3px solid var(--silver);
+        }
+
+        .family-content {
+            max-width: 800px;
+            padding: 40px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+        }
+
+        .family-content h2 {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .family-content p {
+            font-size: 1.2rem;
+            color: var(--silver-light);
+            line-height: 1.8;
+        }
+
+        /* डेस्टिनेशन ग्रिड */
+        .destinations {
+            padding: 80px 5%;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2a 100%);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .title-decoration {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .title-decoration span {
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), var(--silver), var(--gold), transparent);
+        }
+
+        .title-decoration i {
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .destination-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .destination-card {
+            position: relative;
+            height: 500px;
+            border-radius: 30px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.5s ease;
+        }
+
+        .destination-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-20px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(255, 215, 0, 0.3);
+        }
+
+        .destination-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .destination-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            color: white;
+            transform: translateY(100px);
+            transition: all 0.5s ease;
+        }
+
+        .destination-card:hover .card-overlay {
+            transform: translateY(0);
+        }
+
+        .card-overlay h3 {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .card-overlay p {
+            color: var(--silver-light);
+            font-size: 1rem;
+        }
+
+        /* प्राइसिंग सेक्शन */
+        .pricing-section {
+            padding: 80px 5%;
+            background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid var(--silver);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--gold), transparent);
+            animation: rotate 6s linear infinite;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .pricing-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--gold);
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+        }
+
+        .pricing-icon {
+            font-size: 4rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .pricing-card h3 {
+            font-size: 2rem;
+            color: var(--silver-light);
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .price small {
+            font-size: 1rem;
+            color: var(--silver);
+        }
+
+        .member-badge {
+            display: inline-block;
+            padding: 10px 30px;
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            color: #000;
+            font-weight: 700;
+            border-radius: 60px;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .offer-tag {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: linear-gradient(45deg, #ff0000, #ff6b6b);
+            color: white;
+            padding: 10px 40px;
+            transform: rotate(45deg);
+            font-weight: 700;
+            letter-spacing: 2px;
+            box-shadow: 0 5px 15px rgba(255,0,0,0.3);
+        }
+
+        /* होटल सेक्शन */
+        .hotel-section {
+            padding: 80px 5%;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url('https://images.pexels.com/photos/5371582/pexels-photo-5371582.jpeg') center/cover fixed;
+            border-top: 3px solid var(--gold);
+            border-bottom: 3px solid var(--silver);
+        }
+
+        .hotel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hotel-card {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            overflow: hidden;
+            border: 2px solid var(--silver);
+            transition: all 0.5s ease;
+        }
+
+        .hotel-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(255, 215, 0, 0.3);
+        }
+
+        .hotel-image {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .hotel-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .hotel-card:hover .hotel-image img {
+            transform: scale(1.1);
+        }
+
+        .hotel-content {
+            padding: 30px;
+        }
+
+        .hotel-content h3 {
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .hotel-content p {
+            color: var(--silver-light);
+            margin-bottom: 20px;
+        }
+
+        .hotel-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--silver);
+        }
+
+        /* बटन */
+        .gold-btn {
+            display: inline-block;
+            padding: 15px 45px;
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            color: #000;
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border-radius: 60px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .gold-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--gold);
+        }
+
+        /* कॉन्टैक्ट सेक्शन */
+        .contact-section {
+            padding: 60px 5%;
+            background: linear-gradient(135deg, #0a0a0f, #1a1a2a);
+            border-top: 3px solid var(--gold);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-item {
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 30px;
+            border: 2px solid var(--silver);
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            border-color: var(--gold);
+            transform: translateY(-10px);
+        }
+
+        .contact-item i {
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .contact-item a {
+            color: var(--silver-light);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item a:hover {
+            color: var(--gold);
+        }
+
+        /* फूटर */
+        footer {
+            background: #050508;
+            padding: 40px 5%;
+            text-align: center;
+            border-top: 2px solid var(--silver);
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(45deg, var(--gold), var(--silver));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .footer-text {
+            color: var(--silver);
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        /* स्टिकी व्हाट्सएप */
+        .sticky-wa {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #25D366, #128C7E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            text-decoration: none;
+            z-index: 9999;
+            border: 3px solid var(--gold);
+            animation: waPulse 2s infinite;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes waPulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 30px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        .sticky-wa:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        /* रिस्पॉन्सिव */
+        @media (max-width: 768px) {
+            .gold-text {
+                font-size: 3rem;
+            }
+            .silver-text {
+                font-size: 1.2rem;
+            }
+            .family-content h2 {
+                font-size: 2rem;
+            }
+            .destination-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="hindi">
+    <!-- स्टिकी व्हाट्सएप -->
+    <a href="https://wa.me/917995953555?text=नमस्ते%20मंजू%20ट्रैवल्स%2C%20मुझे%20बुकिंग%20करनी%20है।" class="sticky-wa" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- लैंग्वेज स्विचर -->
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="switchLanguage('hindi')">हिंदी</button>
+        <button class="lang-btn" onclick="switchLanguage('english')">ENGLISH</button>
+    </div>
+
+    <!-- वीडियो हेडर -->
+    <div class="video-container">
+        <video autoplay muted loop id="bg-video">
+            <source src="https://player.vimeo.com/external/371837423.sd.mp4?s=df2f7e1a5f9b7e7a9b1c7e5a9b7e7a9b&profile_id=139&oauth2_token_id=57447761" type="video/mp4">
+            </video>
+        <div class="video-overlay"></div>
+        <div class="hero-content">
+            <h1 class="gold-text">
+                <span class="lang-hi-inline">मंजू ट्रैवल्स</span>
+                <span class="lang-en-inline">MANJU TRAVELS</span>
+            </h1>
+            <div class="silver-text">
+                <span class="lang-hi-inline">स्वर्णिम यात्रा का अनुभव</span>
+                <span class="lang-en-inline">GOLDEN TRAVEL EXPERIENCE</span>
+            </div>
+            <a href="#destinations" class="gold-btn">
+                <span class="lang-hi-inline">यात्रा शुरू करें</span>
+                <span class="lang-en-inline">START JOURNEY</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- फैमिली सेक्शन -->
+    <section class="family-section">
+        <div class="family-content">
+            <h2>
+                <span class="lang-hi">खुशियों भरा परिवार</span>
+                <span class="lang-en">HAPPY FAMILY</span>
+            </h2>
+            <p>
+                <span class="lang-hi">हमारे साथ यात्रा करें और बनाएं अपने परिवार के साथ यादगार पल। मंजू ट्रैवल्स लाता है आपके लिए खास फैमिली पैकेज।</span>
+                <span class="lang-en">Travel with us and create memorable moments with your family. Manju Travels brings special family packages for you.</span>
+            </p>
+            <div style="margin-top: 30px;">
+                <i class="fas fa-heart" style="color: var(--gold); font-size: 2rem; margin: 0 10px;"></i>
+                <i class="fas fa-heart" style="color: var(--silver); font-size: 2rem; margin: 0 10px;"></i>
+                <i class="fas fa-heart" style="color: var(--gold); font-size: 2rem; margin: 0 10px;"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- डेस्टिनेशन सेक्शन -->
+    <section class="destinations" id="destinations">
+        <div class="section-title">
+            <h2>
+                <span class="lang-hi">लोकप्रिय गंतव्य</span>
+                <span class="lang-en">POPULAR DESTINATIONS</span>
+            </h2>
+            <div class="title-decoration">
+                <span></span>
+                <i class="fas fa-crown"></i>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="destination-grid">
+            <!-- मनाली कार्ड -->
+            <div class="destination-card">
+                <img src="https://images.pexels.com/photos/1656377/pexels-photo-1656377.jpeg" alt="Manali">
+                <div class="card-overlay">
+                    <h3>मनाली</h3>
+                    <p>
+                        <span class="lang-hi">हिमालय की गोद में बसा स्वर्ग। बर्फ से ढके पहाड़, हरे-भरे घाटियां और रोमांचक गतिविधियां।</span>
+                        <span class="lang-en">Paradise in the lap of Himalayas. Snow-capped mountains, green valleys, and adventurous activities.</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- कश्मीर कार्ड -->
+            <div class="destination-card">
+                <img src="https://images.pexels.com/photos/1824169/pexels-photo-1824169.jpeg" alt="Kashmir">
+                <div class="card-overlay">
+                    <h3>कश्मीर</h3>
+                    <p>
+                        <span class="lang-hi">धरती का स्वर्ग। शिकारा राइड, बर्फीली घाटियां, केसर के खेत और अद्भुत नजारे।</span>
+                        <span class="lang-en">Paradise on Earth. Shikara ride, snowy valleys, saffron fields, and amazing views.</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- गोवा कार्ड -->
+            <div class="destination-card">
+                <img src="https://images.pexels.com/photos/3058928/pexels-photo-3058928.jpeg" alt="Goa">
+                <div class="card-overlay">
+                    <h3>गोवा</h3>
+                    <p>
+                        <span class="lang-hi">समुद्र, रेत और सूर्यास्त का अनोखा संगम। बीच पार्टी, वॉटर स्पोर्ट्स और पुर्तगाली संस्कृति।</span>
+                        <span class="lang-en">Unique blend of sea, sand, and sunset. Beach parties, water sports, and Portuguese culture.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- प्राइसिंग सेक्शन -->
+    <section class="pricing-section">
+        <div class="section-title">
+            <h2>
+                <span class="lang-hi">हमारे ऑफर</span>
+                <span class="lang-en">OUR OFFERS</span>
+            </h2>
+            <div class="title-decoration">
+                <span></span>
+                <i class="fas fa-tag"></i>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="pricing-grid">
+            <!-- ट्रेन ऑफर -->
+            <div class="pricing-card">
+                <div class="offer-tag">
+                    <span class="lang-hi">ऑफर</span>
+                    <span class="lang-en">OFFER</span>
+                </div>
+                <div class="pricing-icon">
+                    <i class="fas fa-train"></i>
+                </div>
+                <h3>
+                    <span class="lang-hi">ट्रेन टिकट</span>
+                    <span class="lang-en">TRAIN TICKET</span>
+                </h3>
+                <div class="price">
+                    ₹999 <small>+</small>
+                </div>
+                <div class="member-badge">
+                    <span class="lang-hi">सिर्फ मेंबर्स के लिए</span>
+                    <span class="lang-en">ONLY FOR MEMBERS</span>
+                </div>
+                <p>
+                    <span class="lang-hi">वांडे भारत, राजधानी, शताब्दी सहित सभी प्रीमियम ट्रेनों पर ऑफर</span>
+                    <span class="lang-en">Offer on all premium trains including Vande Bharat, Rajdhani, Shatabdi</span>
+                </p>
+            </div>
+
+            <!-- फ्लाइट ऑफर -->
+            <div class="pricing-card">
+                <div class="offer-tag">
+                    <span class="lang-hi">ऑफर</span>
+                    <span class="lang-en">OFFER</span>
+                </div>
+                <div class="pricing-icon">
+                    <i class="fas fa-plane"></i>
+                </div>
+                <h3>
+                    <span class="lang-hi">हवाई जहाज</span>
+                    <span class="lang-en">FLIGHT</span>
+                </h3>
+                <div class="price">
+                    ₹1999 <small>+</small>
+                </div>
+                <div class="member-badge">
+                    <span class="lang-hi">सिर्फ मेंबर्स के लिए</span>
+                    <span class="lang-en">ONLY FOR MEMBERS</span>
+                </div>
+                <p>
+                    <span class="lang-hi">घरेलू और अंतर्राष्ट्रीय उड़ानों पर धमाकेदार ऑफर</span>
+                    <span class="lang-en">Amazing offers on domestic and international flights</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- होटल सेक्शन -->
+    <section class="hotel-section">
+        <div class="section-title">
+            <h2>
+                <span class="lang-hi">लग्जरी होटल</span>
+                <span class="lang-en">LUXURY HOTELS</span>
+            </h2>
+            <div class="title-decoration">
+                <span></span>
+                <i class="fas fa-hotel"></i>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="hotel-grid">
+            <!-- होटल 1 -->
+            <div class="hotel-card">
+                <div class="hotel-image">
+                    <img src="https://images.pexels.com/photos/5371582/pexels-photo-5371582.jpeg" alt="Hotel">
+                </div>
+                <div class="hotel-content">
+                    <h3>ग्रैंड पैलेस</h3>
+                    <p>
+                        <span class="lang-hi">5 सितारा लग्जरी होटल, शानदार व्यू, स्विमिंग पूल, स्पा और बेहतरीन रेस्टोरेंट</span>
+                        <span class="lang-en">5-star luxury hotel, amazing view, swimming pool, spa, and excellent restaurant</span>
+                    </p>
+                    <div class="hotel-price">₹4999/रात</div>
+                </div>
+            </div>
+
+            <!-- होटल 2 -->
+            <div class="hotel-card">
+                <div class="hotel-image">
+                    <img src="data:image/jpeg;base64,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" alt="Hotel">
+                </div>
+                <div class="hotel-content">
+                    <h3>रॉयल पैलेस</h3>
+                    <p>
+                        <span class="lang-hi">शाही ठाठ, बेहतरीन सर्विस, लग्जरी रूम और शानदार डाइनिंग</span>
+                        <span class="lang-en">Royal luxury, excellent service, luxury rooms and amazing dining</span>
+                    </p>
+                    <div class="hotel-price">₹3999/रात</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- कॉन्टैक्ट सेक्शन -->
+    <section class="contact-section">
+        <div class="contact-grid">
+            <div class="contact-item">
+                <i class="fas fa-phone-alt"></i>
+                <a href="tel:+917995953555">+91 79959 53555</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-whatsapp"></i>
+                <a href="https://wa.me/917995953555" target="_blank">+91 79959 53555</a>
+            </div>
+            <div class="contact-item">
+                <i class="far fa-envelope"></i>
+                <a href="mailto:manjutravelss99@gmail.com">manjutravelss99@gmail.com</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- फूटर -->
+    <footer>
+        <div class="footer-logo">
+            <span class="lang-hi-inline">मंजू ट्रैवल्स</span>
+            <span class="lang-en-inline">MANJU TRAVELS</span>
+        </div>
+        <div class="footer-text">
+            <span class="lang-hi">© 2025 मंजू ट्रैवल्स — सफर हो शाही, बजट में आसान</span>
+            <span class="lang-en">© 2025 Manju Travels — Royal Journey, Easy on Budget</span>
+        </div>
+    </footer>
+
+    <!-- जावास्क्रिप्ट -->
+    <script>
+        function switchLanguage(lang) {
+            const body = document.body;
+            const langBtns = document.querySelectorAll('.lang-btn');
+            
+            if (lang === 'hindi') {
+                body.classList.remove('english');
+                body.classList.add('hindi');
+                langBtns[0].classList.add('active');
+                langBtns[1].classList.remove('active');
+            } else {
+                body.classList.remove('hindi');
+                body.classList.add('english');
+                langBtns[1].classList.add('active');
+                langBtns[0].classList.remove('active');
+            }
+        }
+
+        // स्क्रॉल एनिमेशन
+        window.addEventListener('scroll', function() {
+            const cards = document.querySelectorAll('.destination-card, .pricing-card, .hotel-card');
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (cardTop < windowHeight - 100) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
